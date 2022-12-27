@@ -1,12 +1,14 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
+
 const bodyParser = require("body-parser");
 require('dotenv').config();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 const { TiledeskClient } = require('@tiledesk/tiledesk-client');
 var assert = require('assert');
 const fs = require('fs');
+const path = require('path');
 const handlebars = require('handlebars');
 const pjson = require('./package.json');
 // import node-fetch
@@ -15,6 +17,10 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) =>
 const { resolve } = require('path');
 // Replace if using a different env file or config
 const env = require('dotenv').config({ path: './.env' });
+
+router.use(express.static(path.join(__dirname, 'template')));
+
+
 
 
 router.get('/', async (req, res) => {
@@ -78,6 +84,36 @@ router.get('/create-mail', async (req, res) => {
   }
 });
 
+router.get('/info', async (req, res) => {
+  console.log('READ APP Stripe Info');
+  console.log('Request query: ', req.query);
+  var projectId = req.query.projectId;
+  var log = false;
+  var page = '/info.html';
+  var dir = '/template';
+  readHTMLFile(page, dir, (err, html) => {
+    if (err) {
+      console.log("(ERROR) Read html file: ", err);
+    }
+    var template = handlebars.compile(html);
+    var replacements = {
+      //domain: domain,
+      //pay_method_types: pay_method_types,
+      //stripe_publishable_key: sett.stripe_publishable_key,
+      //stripe_secret_key: stripe_secret_key,
+      //stripe_wehook_segret: sett.stripe_wehook_segret
+    }
+    if (log) {
+      console.log("Replacements: ", replacements);
+    }
+    var html = template(replacements);
+    res.send(html);
+  })
+})
+
+
+
+
 // *****************************
 // ********* FUNCTIONS *********
 // *****************************
@@ -105,4 +141,5 @@ function readHTMLFile(templateName, dir, callback) {
     })
 }
 
-module.exports = { router: router, startApp: startApp };
+//module.exports = { router: router, startApp: startApp };
+module.exports = { router: router };
