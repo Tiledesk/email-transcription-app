@@ -45,42 +45,43 @@
   <div id="form" class="container">
    <div id="createdPay" style='display: block;text-align:center;'>
    <p class="input-label" id="app_name" style="text-align:center; margin-bottom: 10px;">Send chat history</p>
-    
+
+     <!--
      <div class="box" style="display: flex; flex-direction: row;">
         <div>
          <input type="button" id="cnf_send1" onclick="" style="background: url(/images/manutenzione.png); width: 30px; height: 29px;background-color: white; margin-left:10px; border-radius: 5px;" placeholder="Setup App" />
        </div>
      </div>
-
-     <div style="min-width: 200px;">
-     <div class="form-group" style="width: 200px;">
+    -->
+     <div>
+     <div class="form-group">
      <label class="input-label" for="recipient_address">Recipient address</label>
      <div style="display: flex; flex-direction: row;">
-        <div style="width: 200px;">
+        <div>
          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" placeholder="Recipient address"/>
+          <input type="email" class="form-control copy-form custom-input" style="width: 280px;" name="recipient_address" id="recipient_address" placeholder="Recipient address"/>
          </div>
         </div>
       </div>
      </div>
 
-     <div class="form-group" style="width: 200px;">
+     <div class="form-group">
      <label class="input-label" for="object">Object</label>
      <div style="display: flex; flex-direction: row;">
-        <div style="width: 200px;">
+        <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="text" class="form-control copy-form custom-input" name="object" id="object" placeholder="Object mail" oninput="reWrite()" required/>
+          <input type="text" class="form-control copy-form custom-input" style="width: 280px;" name="object" id="object" placeholder="Object mail" oninput="reWrite()" required/>
           </div>
         </div>
       </div>
      </div>
 
-       <div class="form-group" style="width: 200px;">
+       <div class="form-group">
         <label class="input-label" for="message">Message</label>
      <div style="display: flex; flex-direction: row;">
-        <div style="width: 200px;">
+        <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
-            <textarea id="message" class="form-control copy-form custom-input" name="message" rows="3" cols="30" required placeholder="Body of the email"></textarea>
+            <textarea id="message"  class="form-control copy-form custom-input" name="message" rows="4" cols="33" required placeholder="Body of the email"></textarea>
           </div>
         </div>
       </div> 
@@ -94,7 +95,7 @@
       <input type='hidden' id='projectId' name='projectId' />
       <input type='hidden' id='request_id' name='request_id' />
 
-      <div style="width: 200px; text-align: center;">
+      <div style="text-align: center;">
         <button id='send_btn' class="action-button" >Send chat</button>
      </div>
        
@@ -128,7 +129,10 @@
       }
       urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
       XHR.addEventListener("loadend", function(event) {
-        if (url == 'https://tiledesk-server-pre.herokuapp.com/6346da0276e11d003550d71d/emails/send') {
+        console.log('response server mail: ', XHR.responseText);
+        var resp_mail = JSON.parse(XHR.responseText);
+        console.log('response server mail JSON: ', resp_mail.queued);
+        if (resp_mail) {
           //let createdPay = document.getElementById('createdPay');
           //createdPay.style.display = "none";
           //let summaryPay = document.getElementById('summaryPay');
@@ -137,17 +141,27 @@
           document.getElementById("object").value = "";
           document.getElementById("message").value = "";
         }
-        console.log( 'Send mail url/', url ); 
-        console.log( 'Send mail data/', data ); 
       });
       XHR.addEventListener( 'error', function(event) {
         console.log( 'Oops! Something went wrong.' );
       } );
       //XHR.open( 'POST', '/payment/created' );
+      console.log( 'Send mail url/', url ); 
+      console.log( 'Send mail data/', data ); 
+      console.log( 'Send mail token/', token.value);
       XHR.open( 'POST', url );
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-      XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
+      //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
+      XHR.setRequestHeader("Authorization", token.value);
       XHR.send( urlEncodedData );
+      // Capture the response to the server mail
+      XHR.onreadystatechange = function() {
+        if (this.status == 200) {
+           // Typical action to be performed when the document is ready:
+          console.log('Response Call: ', XHR.responseText)
+          //document.getElementById("demo").innerHTML = xhttp.responseText;
+        }
+      };
     }
 
     
@@ -159,6 +173,7 @@
       const recipient_address = document.getElementById('recipient_address');
       const object = document.getElementById('object');
       const message = document.getElementById('message');
+      const projectId = document.getElementById('projectId');
       //------------------------------------------------------------
       // VALIDATE CUSTOMER MAIL
       var mail = false;
@@ -179,8 +194,12 @@
       console.log("Payment/recipient_address: ", recipient_address.value);
       console.log("Payment/object: ", object.value);
       console.log("Payment/message: ", message.value);
+      console.log("Payment/token: ", token.value);
+      console.log("Payment/Project ID: ", projectId.value);
       console.log("Payment/mail_correct: ", mail_correct);
-      if ( mail_correct == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  ) { 
+      if ( mail_correct == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  )     { 
+      //var send_url = 'https://api.tiledesk.com/v2/'+'63aaf3931275130012c44b8b'+'/emails/send';
+        var send_url = 'https://api.tiledesk.com/v2/'+ projectId.value +'/emails/send';
       if (object) {
         sendData( {
           //token:token.value,
@@ -189,7 +208,7 @@
           to:recipient_address.value,
           subject:object.value,
           text:message.value
-        }, 'https://tiledesk-server-pre.herokuapp.com/6346da0276e11d003550d71d/emails/send');
+        }, send_url);
       }  else {
         //amount.value = 0;
       }

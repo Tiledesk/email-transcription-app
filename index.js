@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+var PORT = 3000;
 
 
 //APP USE
@@ -7,9 +8,9 @@ app.use('/images', express.static(__dirname + '/images'));
 //app.use('/template', express.static(__dirname + '/template'));
 
 // ROUTE
-const emaitransapp = require("./emaitransappRoute");
+const emaitransapp = require("./emaitransappRoute/index.js");
 const emaitransappRoute = emaitransapp.router;
-app.use("/", emaitransappRoute);
+app.use("/", emaitransapp);
 
 /*
 
@@ -54,4 +55,7 @@ app.post('/', urlencodedParser, (req, res) => {
   res.sendStatus(200);
 });
 */
-app.listen(3000);
+app.listen(PORT, function(err){
+    if (err) console.log(err);
+    console.log("Server listening on PORT", PORT);
+});

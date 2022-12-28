@@ -24,6 +24,7 @@ router.use(express.static(path.join(__dirname, 'template')));
 
 
 router.get('/', async (req, res) => {
+  console.log(req.baseUrl)
   res.send('Home works!')
 })
 
@@ -141,5 +142,6 @@ function readHTMLFile(templateName, dir, callback) {
     })
 }
 
+//export this router to use in our index.js
 //module.exports = { router: router, startApp: startApp };
-module.exports = { router: router };
+module.exports = router;
