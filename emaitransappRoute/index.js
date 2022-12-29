@@ -32,7 +32,7 @@ router.get('/create-mail', async (req, res) => {
   var page = '';
   var dir = '';
   //READ THE CONFIGURATION FILE
-  console.log('req project_id ', req.query.project_id);
+  console.log('req query ', req.query);
   var projectId = req.query.project_id;
   if (projectId != '') {
     // SETTINGS IS OK!

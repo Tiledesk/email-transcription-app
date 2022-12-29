@@ -25,14 +25,17 @@
         //projectId.value = event.data.request.lead;  
         console.log('projectId: ',projectId.value)
       }
-      request_id.value = event.data.request.request_id;
-      console.log('request_id: ',request_id.value)
+      var requestId = document.getElementById("request_id");
+      requestId.value = event.data.request.request_id;
+      console.log('RequestId: ',requestId.value)
       const cnf_send = document.getElementById("cnf_send");
       var url = "location.href='https://accept-a-payment-app-into-chat.leomirco.repl.co/getconfigure/?projectId="+projectId.value+"';"
       cnf_send.setAttribute("onclick", url);
       //var url2 = 'https://accept-a-payment-app-into-chat.leomirco.repl.co/getconfigure/?projectId='+projectId.value
       //window.open(url2, '_self')
       //alert("token.value: ", event.data.token);
+      // CALL THE SERVICE FOR EMAIL TRANSCRIPTION
+      readTrascriptionChat();
   }
 }, false);
 
@@ -54,12 +57,22 @@
      </div>
     -->
      <div>
+       <div class="form-group">
+        <label class="input-label" for="message">Chat text</label>
+     <div style="display: flex; flex-direction: row;">
+        <div>
+          <div style="display: flex; flex-direction: row; align-items: center;">
+            <textarea id="message"  class="form-control copy-form custom-input" name="message" rows="8" cols="33" required placeholder="Chat text"></textarea>
+          </div>
+        </div>
+      </div> 
+       </div>
      <div class="form-group">
-     <label class="input-label" for="recipient_address">Recipient address</label>
+     <label class="input-label" for="recipient_address">Send chat to</label>
      <div style="display: flex; flex-direction: row;">
         <div>
          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" style="width: 280px;" name="recipient_address" id="recipient_address" placeholder="Recipient address"/>
+          <input type="email" class="form-control copy-form custom-input" style="width: 280px;" name="recipient_address" id="recipient_address" placeholder="Send chat to"/>
          </div>
         </div>
       </div>
@@ -75,36 +88,16 @@
         </div>
       </div>
      </div>
-
-       <div class="form-group">
-        <label class="input-label" for="message">Message</label>
-     <div style="display: flex; flex-direction: row;">
-        <div>
-          <div style="display: flex; flex-direction: row; align-items: center;">
-            <textarea id="message"  class="form-control copy-form custom-input" name="message" rows="4" cols="33" required placeholder="Body of the email"></textarea>
-          </div>
-        </div>
-      </div> 
-       </div>
-
-
-       
-
       <!-- SEND TOKEN TO INDEX.JS -->
       <input type='hidden' id='token' name='token' />
       <input type='hidden' id='projectId' name='projectId' />
       <input type='hidden' id='request_id' name='request_id' />
-
+      <!-- SEND BUTTON -->
       <div style="text-align: center;">
         <button id='send_btn' class="action-button" >Send chat</button>
      </div>
-       
      </div>
      </div>
-
-
-
-
   </div>
   </div>
    <div id="summaryPay" style='display: none'>
@@ -117,9 +110,21 @@
    </div>
   
  <script>
-
+   // DEFINE THE OBJECT MSG
+   var msg = [];
+   var message;
    
-    function sendData( data, url ) {
+    function readTrascriptionChat() {
+      const requestId = document.getElementById('request_id');
+      console.log('rTChat requestID: ', requestId.value);
+      // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION --> MODIFICA CON REQUEST GROUP
+      call_url = 'https://api.tiledesk.com/v2/public/requests/'+'support-group-63aaf3931275130012c44b8b-16856a17b236478095de1df26b6919b5'+'/messages'
+       sendData( {
+          request_id:requestId.value,
+        }, call_url, 'GET');
+    }
+   
+    function sendData( data, url, opr ) {
       const XHR = new XMLHttpRequest();
       let urlEncodedData = "",
           urlEncodedDataPairs = [],
@@ -130,7 +135,13 @@
       urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
       XHR.addEventListener("loadend", function(event) {
         console.log('response server mail: ', XHR.responseText);
-        var resp_mail = JSON.parse(XHR.responseText);
+        console.log('OPR:',opr);
+        let result;
+        result = opr.localeCompare('POST');
+        console.log('result POST: ',result);
+        // SEND MAIL
+        if (result == 0) {
+          var resp_mail = JSON.parse(XHR.responseText);
         console.log('response server mail JSON: ', resp_mail.queued);
         if (resp_mail) {
           //let createdPay = document.getElementById('createdPay');
@@ -140,7 +151,33 @@
           document.getElementById("recipient_address").value = "";
           document.getElementById("object").value = "";
           document.getElementById("message").value = "";
+          }
         }
+        result = opr.localeCompare('GET');
+        console.log('result GET: ',result);
+        message = document.getElementById('message');
+        // READ TRANSCRIPTION
+         if (result == 0) {
+           message.innerHTML = '';
+           var jsonData = JSON.parse(XHR.responseText);
+           console.log('response transcript mail JSON: ', jsonData);
+           // INSERT MSG JSON INTO ARRAY MSG
+           for (var i = 0; i < jsonData.length; i++) {
+            var singlemsg = jsonData[i];
+             console.log('user',singlemsg.senderFullname);
+             console.log('text',singlemsg.text);
+             msg.push(singlemsg);
+            // populate the text area
+            //message.innerHTML += JSON.stringify(singlemsg, ["senderFullname", "text"]);
+           message.innerHTML += singlemsg.senderFullname;
+           message.innerHTML += ": ";
+           message.innerHTML += singlemsg.text;
+          if (i < jsonData.length -1) {
+              message.innerHTML += "\n\n";
+          }
+          }    
+         } 
+        
       });
       XHR.addEventListener( 'error', function(event) {
         console.log( 'Oops! Something went wrong.' );
@@ -149,7 +186,7 @@
       console.log( 'Send mail url/', url ); 
       console.log( 'Send mail data/', data ); 
       console.log( 'Send mail token/', token.value);
-      XHR.open( 'POST', url );
+      XHR.open( opr, url );
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
       //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
       XHR.setRequestHeader("Authorization", token.value);
@@ -172,7 +209,7 @@
       //document.getElementById('createdPay').style.display='none';
       const recipient_address = document.getElementById('recipient_address');
       const object = document.getElementById('object');
-      const message = document.getElementById('message');
+      message = document.getElementById('message');
       const projectId = document.getElementById('projectId');
       //------------------------------------------------------------
       // VALIDATE CUSTOMER MAIL
@@ -208,7 +245,7 @@
           to:recipient_address.value,
           subject:object.value,
           text:message.value
-        }, send_url);
+        }, send_url, 'POST');
       }  else {
         //amount.value = 0;
       }
