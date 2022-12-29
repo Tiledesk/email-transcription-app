@@ -29,11 +29,6 @@
       requestId.value = event.data.request.request_id;
       console.log('RequestId: ',requestId.value)
       const cnf_send = document.getElementById("cnf_send");
-      var url = "location.href='https://accept-a-payment-app-into-chat.leomirco.repl.co/getconfigure/?projectId="+projectId.value+"';"
-      cnf_send.setAttribute("onclick", url);
-      //var url2 = 'https://accept-a-payment-app-into-chat.leomirco.repl.co/getconfigure/?projectId='+projectId.value
-      //window.open(url2, '_self')
-      //alert("token.value: ", event.data.token);
       // CALL THE SERVICE FOR EMAIL TRANSCRIPTION
       readTrascriptionChat();
   }
@@ -46,8 +41,8 @@
 <body>
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
   <div id="form" class="container">
-   <div id="createdPay" style='display: block;text-align:center;'>
-   <p class="input-label" id="app_name" style="text-align:center; margin-bottom: 10px;">Send chat history</p>
+   <div id="createdMail" style='display: block;text-align:center;'>
+   <p class="input-label" id="app_name" style="text-align:center; margin-bottom: 10px;font-size: 16px">Send chat history</p>
 
      <!--
      <div class="box" style="display: flex; flex-direction: row;">
@@ -62,17 +57,19 @@
      <div style="display: flex; flex-direction: row;">
         <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
-            <textarea id="message"  class="form-control copy-form custom-input" name="message" rows="8" cols="33" required placeholder="Chat text"></textarea>
+            <textarea id="message"  class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" required placeholder="Chat text"></textarea>
           </div>
         </div>
       </div> 
        </div>
+
+       
      <div class="form-group">
      <label class="input-label" for="recipient_address">Send chat to</label>
      <div style="display: flex; flex-direction: row;">
         <div>
          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" style="width: 280px;" name="recipient_address" id="recipient_address" placeholder="Send chat to"/>
+          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" placeholder="Send chat to"/>
          </div>
         </div>
       </div>
@@ -83,7 +80,7 @@
      <div style="display: flex; flex-direction: row;">
         <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="text" class="form-control copy-form custom-input" style="width: 280px;" name="object" id="object" placeholder="Object mail" oninput="reWrite()" required/>
+          <input type="text" class="form-control copy-form custom-input" name="object" id="object" placeholder="Object mail" oninput="reWrite()" required/>
           </div>
         </div>
       </div>
@@ -100,13 +97,9 @@
      </div>
   </div>
   </div>
-   <div id="summaryPay" style='display: none'>
-     <p class="input-label" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 30px;">Email Transcript App!</p>
+   <div id="summaryMail" style='display: none'>
+     <p class="input-label" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 50px;">Email with chat history sent successfully!</p>
      <div style="display: flex; flex-direction: column; align-items: center;">
-
-      <button onclick="document.getElementById('summaryPay').style.display='none';document.getElementById('createdPay').style.display='block';" id='btn_pay' class="action-button" >Send chat history </button>
-      <button onclick="document.getElementById('summaryPay').style.display='none';document.getElementById('createdPay').style.display='block';" class="action-button" id='cnf_send' class="action-button">Configure the application</button>
-     </div>
    </div>
   
  <script>
@@ -117,8 +110,9 @@
     function readTrascriptionChat() {
       const requestId = document.getElementById('request_id');
       console.log('rTChat requestID: ', requestId.value);
-      // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION --> MODIFICA CON REQUEST GROUP
-      call_url = 'https://api.tiledesk.com/v2/public/requests/'+'support-group-63aaf3931275130012c44b8b-16856a17b236478095de1df26b6919b5'+'/messages'
+      // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION
+      //call_url = 'https://api.tiledesk.com/v2/public/requests/'+'support-group-63aaf3931275130012c44b8b-16856a17b236478095de1df26b6919b5'+'/messages';
+      call_url = 'https://api.tiledesk.com/v2/public/requests/'+ requestId.value +'/messages';
        sendData( {
           request_id:requestId.value,
         }, call_url, 'GET');
@@ -144,10 +138,10 @@
           var resp_mail = JSON.parse(XHR.responseText);
         console.log('response server mail JSON: ', resp_mail.queued);
         if (resp_mail) {
-          //let createdPay = document.getElementById('createdPay');
-          //createdPay.style.display = "none";
-          //let summaryPay = document.getElementById('summaryPay');
-          //summaryPay.style.display = "block";
+          let createdMail = document.getElementById('createdMail');
+          createdMail.style.display = "none";
+          let summaryMail = document.getElementById('summaryMail');
+          summaryMail.style.display = "block";
           document.getElementById("recipient_address").value = "";
           document.getElementById("object").value = "";
           document.getElementById("message").value = "";
@@ -205,8 +199,8 @@
     const btnSend = document.getElementById('send_btn');
     const error = document.getElementById('error');
     btnSend.addEventListener( 'click', function() {
-      //document.getElementById('summaryPay').style.display='block';
-      //document.getElementById('createdPay').style.display='none';
+      //document.getElementById('summaryMail').style.display='block';
+      //document.getElementById('createdMail').style.display='none';
       const recipient_address = document.getElementById('recipient_address');
       const object = document.getElementById('object');
       message = document.getElementById('message');
@@ -214,7 +208,8 @@
       //------------------------------------------------------------
       // VALIDATE CUSTOMER MAIL
       var mail = false;
-      var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      //var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      var mailformat = /^[^\s;]+@[^\s;]+\.[^\s;]+(?:;[^\s;]+@[^\s;]+\.[^\s;]+)*$/;
       if (recipient_address.value.match(mailformat)) {
         //alert("You have entered a Valid email address!");
         recipient_address.focus();
@@ -230,7 +225,15 @@
       //------------------------------------------------------------
       console.log("Payment/recipient_address: ", recipient_address.value);
       console.log("Payment/object: ", object.value);
-      console.log("Payment/message: ", message.value);
+      // ADD TO MSG THE PRESENTATION:
+      var mess = message.value;
+      console.log("Payment/message 1: ", message.innerHTML);
+      message.innerHTML = 'Below is the chat history: ';
+      message.innerHTML += '\n\n';
+      message.innerHTML += mess;
+      message.innerHTML += '\n\n';
+      message.innerHTML += 'Best regards! The Tiledesk team.';
+      console.log("Payment/message 2: ", message.innerHTML);
       console.log("Payment/token: ", token.value);
       console.log("Payment/Project ID: ", projectId.value);
       console.log("Payment/mail_correct: ", mail_correct);
@@ -244,7 +247,7 @@
           //request_id:request_id.value,
           to:recipient_address.value,
           subject:object.value,
-          text:message.value
+          text:message.innerHTML
         }, send_url, 'POST');
       }  else {
         //amount.value = 0;
