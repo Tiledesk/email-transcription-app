@@ -14,15 +14,12 @@
       //GET TOK  EN FROM PAGE TILEDESK
       const token = document.getElementById("token");
       console.log('token: ',token)
-      //token.value = JSON.stringify(event.data.token);
       token.value = event.data.token;
       console.log('token.value: ',token.value)
       var projectId = document.getElementById("projectId");
       if(event.data.request.id_project){
-        //projectId.value = JSON.stringify(event.data.request.department.id_project);
         projectId.value = event.data.request.id_project;
         // ESEMPIO PER LEGGERE LA MAIL DELL'UTENTE
-        //projectId.value = event.data.request.lead;  
         console.log('projectId: ',projectId.value)
       }
       var requestId = document.getElementById("request_id");
@@ -40,51 +37,44 @@
 
 <body>
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
-  <div id="form" class="container">
-   <div id="createdMail" style='display: block;text-align:center;'>
-   <p class="input-label" id="app_name" style="text-align:center; margin-bottom: 10px;font-size: 16px">Send chat history</p>
-
-     <!--
-     <div class="box" style="display: flex; flex-direction: row;">
-        <div>
-         <input type="button" id="cnf_send1" onclick="" style="background: url(/images/manutenzione.png); width: 30px; height: 29px;background-color: white; margin-left:10px; border-radius: 5px;" placeholder="Setup App" />
-       </div>
-     </div>
-    -->
-     <div>
-       <div class="form-group">
-        <label class="input-label" for="message">Chat text</label>
-     <div style="display: flex; flex-direction: row;">
-        <div>
-          <div style="display: flex; flex-direction: row; align-items: center;">
-            <textarea id="message"  class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" required placeholder="Chat text"></textarea>
-          </div>
-        </div>
-      </div> 
-       </div>
-
-       
+  <div id="form" class="container" style="display:flex; align-items: center; justify-content: center;">
+   <div id="createdMail">
+   <p class="subtitle" id="app_name" style="text-align:center; margin-bottom: 22px;">Send transcript by email</p>
      <div class="form-group">
-     <label class="input-label" for="recipient_address">Send chat to</label>
+     <label class="input-label" for="recipient_address">Email addresses</label>
      <div style="display: flex; flex-direction: row;">
         <div>
          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" placeholder="Send chat to"/>
+          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" oninput="reWrite()" placeholder="Insert the email addresses.. " required/>
          </div>
         </div>
       </div>
      </div>
 
      <div class="form-group">
-     <label class="input-label" for="object">Object</label>
+     <label class="input-label" for="object">Subject of the email</label>
      <div style="display: flex; flex-direction: row;">
         <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="text" class="form-control copy-form custom-input" name="object" id="object" placeholder="Object mail" oninput="reWrite()" required/>
+          <input type="text" class="form-control copy-form custom-input" name="object" id="object" placeholder="Insert the subject of the email.."/>
           </div>
         </div>
       </div>
      </div>
+     <div>
+       <div class="form-group">
+        <label class="input-label" for="message">Chat text</label>
+     <div style="display: flex; flex-direction: row;">
+        <div >
+          <div style="display: flex; flex-direction: row; align-items: center;">
+            <textarea id="message"  class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" required placeholder="Insert the transcript of the chat.."></textarea>
+          </div>
+        </div>
+      </div> 
+       </div>
+
+       
+     
       <!-- SEND TOKEN TO INDEX.JS -->
       <input type='hidden' id='token' name='token' />
       <input type='hidden' id='projectId' name='projectId' />
@@ -98,8 +88,7 @@
   </div>
   </div>
    <div id="summaryMail" style='display: none'>
-     <p class="input-label" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 50px;">Email with chat history sent successfully!</p>
-     <div style="display: flex; flex-direction: column; align-items: center;">
+     <p class="info-box" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 80px;font-size: 28px"></p>
    </div>
   
  <script>
@@ -110,8 +99,7 @@
     function readTrascriptionChat() {
       const requestId = document.getElementById('request_id');
       console.log('rTChat requestID: ', requestId.value);
-      // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION
-      //call_url = 'https://api.tiledesk.com/v2/public/requests/'+'support-group-63aaf3931275130012c44b8b-16856a17b236478095de1df26b6919b5'+'/messages';
+      // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION (PRODUCTION SYSTEM)
       call_url = 'https://api.tiledesk.com/v2/public/requests/'+ requestId.value +'/messages';
        sendData( {
           request_id:requestId.value,
@@ -128,25 +116,37 @@
       }
       urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
       XHR.addEventListener("loadend", function(event) {
-        console.log('response server mail: ', XHR.responseText);
+        console.log('response server mail0: ', XHR.responseText);
         console.log('OPR:',opr);
         let result;
         result = opr.localeCompare('POST');
         console.log('result POST: ',result);
         // SEND MAIL
         if (result == 0) {
-          var resp_mail = JSON.parse(XHR.responseText);
-        console.log('response server mail JSON: ', resp_mail.queued);
-        if (resp_mail) {
+          let msgToUser = document.getElementById('app_send');
           let createdMail = document.getElementById('createdMail');
-          createdMail.style.display = "none";
           let summaryMail = document.getElementById('summaryMail');
+          console.log ('whatIsIt', XHR.responseText.localeCompare("{queued:true}"));
+        if (XHR.responseText.localeCompare("{queued:true}") == -1) {
+          var resp_mail = JSON.parse(XHR.responseText);
+          console.log('response server mail1: ', resp_mail);
+          console.log('response server mail JSON1: ', resp_mail.queued);
+          //Check that the email has been sent correctly
+          if (resp_mail.queued) {
+            createdMail.style.display = "none";
+            msgToUser.innerHTML = "Email sent successfully!"
+            summaryMail.style.display = "block";
+            document.getElementById("recipient_address").value = "";
+            document.getElementById("object").value = "";
+            document.getElementById("message").value = "";
+          } 
+        } else {
+          createdMail.style.display = "none";
           summaryMail.style.display = "block";
-          document.getElementById("recipient_address").value = "";
-          document.getElementById("object").value = "";
-          document.getElementById("message").value = "";
-          }
+          console.log('response server mail2: ', resp_mail);
+          msgToUser.innerHTML = "The following error has occurred! "+"'"+resp_mail+"''";
         }
+      }
         result = opr.localeCompare('GET');
         console.log('result GET: ',result);
         message = document.getElementById('message');
@@ -162,7 +162,6 @@
              console.log('text',singlemsg.text);
              msg.push(singlemsg);
             // populate the text area
-            //message.innerHTML += JSON.stringify(singlemsg, ["senderFullname", "text"]);
            message.innerHTML += singlemsg.senderFullname;
            message.innerHTML += ": ";
            message.innerHTML += singlemsg.text;
@@ -189,18 +188,15 @@
       XHR.onreadystatechange = function() {
         if (this.status == 200) {
            // Typical action to be performed when the document is ready:
-          console.log('Response Call: ', XHR.responseText)
-          //document.getElementById("demo").innerHTML = xhttp.responseText;
+          console.log('Response Call: ', XHR.responseText);
+        } else {
+          console.log('Response Call: ', XHR.responseText);
         }
       };
     }
-
-    
     const btnSend = document.getElementById('send_btn');
     const error = document.getElementById('error');
     btnSend.addEventListener( 'click', function() {
-      //document.getElementById('summaryMail').style.display='block';
-      //document.getElementById('createdMail').style.display='none';
       const recipient_address = document.getElementById('recipient_address');
       const object = document.getElementById('object');
       message = document.getElementById('message');
@@ -238,7 +234,6 @@
       console.log("Payment/Project ID: ", projectId.value);
       console.log("Payment/mail_correct: ", mail_correct);
       if ( mail_correct == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  )     { 
-      //var send_url = 'https://api.tiledesk.com/v2/'+'63aaf3931275130012c44b8b'+'/emails/send';
         var send_url = 'https://api.tiledesk.com/v2/'+ projectId.value +'/emails/send';
       if (object) {
         sendData( {
@@ -263,6 +258,42 @@
       recipient_address = document.getElementById('recipient_address');
       recipient_address.style.color='black';
     }
+    // SELECT THE INPUT TEXT MAIL
+    function Reselect() {
+      recipient_address = document.getElementById('recipient_address');
+      recipient_address.value='';
+      console.log('CIAO');
+    }
+   var stringConstructor = "test".constructor;
+var arrayConstructor = [].constructor;
+var objectConstructor = ({}).constructor;
+
+function whatIsIt(object) {
+    if (object === null) {
+        return "null";
+    }
+    if (object === undefined) {
+        return "undefined";
+    }
+    if (object.constructor === stringConstructor) {
+        return "String";
+    }
+    if (object.constructor === arrayConstructor) {
+        return "Array";
+    }
+    if (object.constructor === objectConstructor) {
+        return "Object";
+    }
+    {
+        return "don't know";
+    }
+}
+
+var testSubjects = ["string", [1,2,3], {foo: "bar"}, 4];
+
+for (var i=0, len = testSubjects.length; i < len; i++) {
+    //alert(whatIsIt(testSubjects[i]));
+}
   </script>
 </body>
 </html>
