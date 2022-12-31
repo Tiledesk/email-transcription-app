@@ -89,6 +89,10 @@
   </div>
    <div id="summaryMail" style='display: none'>
      <p class="info-box" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 80px;font-size: 28px"></p>
+     <!-- NEW MAIL BUTTON -->
+      <div style="text-align: center;">
+        <button id='newmail_btn' class="action-button" >Send new mail</button>
+     </div>
    </div>
   
  <script>
@@ -138,7 +142,7 @@
             summaryMail.style.display = "block";
             document.getElementById("recipient_address").value = "";
             document.getElementById("object").value = "";
-            document.getElementById("message").value = "";
+            document.getElementById("message").innerHTML = "";
           } 
         } else {
           createdMail.style.display = "none";
@@ -168,7 +172,8 @@
           if (i < jsonData.length -1) {
               message.innerHTML += "\n\n";
           }
-          }    
+          }   
+            console.log('message: ', message.innerHTML);
          } 
         
       });
@@ -197,27 +202,12 @@
     const btnSend = document.getElementById('send_btn');
     const error = document.getElementById('error');
     btnSend.addEventListener( 'click', function() {
-      const recipient_address = document.getElementById('recipient_address');
+      var recipient_address = document.getElementById('recipient_address');
       const object = document.getElementById('object');
       message = document.getElementById('message');
       const projectId = document.getElementById('projectId');
       //------------------------------------------------------------
       // VALIDATE CUSTOMER MAIL
-      var mail = false;
-      //var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      var mailformat = /^[^\s;]+@[^\s;]+\.[^\s;]+(?:;[^\s;]+@[^\s;]+\.[^\s;]+)*$/;
-      if (recipient_address.value.match(mailformat)) {
-        //alert("You have entered a Valid email address!");
-        recipient_address.focus();
-        mail_correct = true;
-        //return true;
-      }
-      else {
-        //alert("Invalid Email Address");
-        recipient_address.focus();
-        mail_correct = false;
-        //return false;
-      }
       //------------------------------------------------------------
       console.log("Payment/recipient_address: ", recipient_address.value);
       console.log("Payment/object: ", object.value);
@@ -232,8 +222,8 @@
       console.log("Payment/message 2: ", message.innerHTML);
       console.log("Payment/token: ", token.value);
       console.log("Payment/Project ID: ", projectId.value);
-      console.log("Payment/mail_correct: ", mail_correct);
-      if ( mail_correct == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  )     { 
+      //console.log("Payment/mail_correct: ", mail_correct);
+      if ( validateMail(recipient_address) == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  )     { 
         var send_url = 'https://api.tiledesk.com/v2/'+ projectId.value +'/emails/send';
       if (object) {
         sendData( {
@@ -251,6 +241,17 @@
         recipient_address.value = 'The email is incorrect!';
         recipient_address.style.color='red';
       } 
+    });
+
+
+   //BUTTON NEW MAIL
+   const btnNewMail = document.getElementById('newmail_btn');
+    btnNewMail.addEventListener( 'click', function() {
+      readTrascriptionChat();
+      let createdMail = document.getElementById('createdMail');
+      let summaryMail = document.getElementById('summaryMail');
+      createdMail.style.display = "block";
+      summaryMail.style.display = "none";
     });
 
    // CHANGE COLOR WHILE RE_WRITE THE INPUT TEXT MAIL
@@ -294,6 +295,28 @@ var testSubjects = ["string", [1,2,3], {foo: "bar"}, 4];
 for (var i=0, len = testSubjects.length; i < len; i++) {
     //alert(whatIsIt(testSubjects[i]));
 }
+
+   function validateMail(recipient_address) {
+     var mail_correct = false;
+      //var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      var mailformat = /^[^\s;]+@[^\s;]+\.[^\s;]+(?:;[^\s;]+@[^\s;]+\.[^\s;]+)*$/;
+      if (recipient_address.value.match(mailformat)) {
+        //alert("You have entered a Valid email address!");
+        recipient_address.focus();
+        mail_correct = true;
+        console.log('mail_correct', mail_correct);
+        return true;
+      }
+      else {
+        //alert("Invalid Email Address");
+        recipient_address.focus();
+        mail_correct = false;
+        console.log('mail_correct', mail_correct);
+        return false;
+      }
+     
+   }
+   
   </script>
 </body>
 </html>
