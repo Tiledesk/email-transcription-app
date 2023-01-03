@@ -38,21 +38,42 @@
 <body>
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
   <div id="form" class="container" style="display:flex; align-items: center; justify-content: center;">
-   <div id="createdMail">
-   <p class="subtitle" id="app_name" style="text-align:center; margin-bottom: 22px;">Send transcript by email</p>
+    <!--
+   <div id="createdMail" class="field-wrapper-email">
+    -->
+    <div id="createdMail">
+   <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
      <div class="form-group">
-     <label class="input-label" for="recipient_address">Email addresses</label>
-     <div style="display: flex; flex-direction: row;">
+      <!--
+     <label class="input-label" for="recipient_address">To</label>
+       -->
+      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="to">
         <div>
          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" oninput="reWrite()" placeholder="Insert the email addresses.. " required/>
+          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" onfocus="Reselect()"  oninput="reWrite('to')" required/>
+           <div class="field-placeholder" id="field-placeholder_email" onclick="addFocus('to');"><span>TO</span></div>
          </div>
         </div>
       </div>
      </div>
 
+      <div class="form-group">
+      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="subject">
+        <div>
+         <div style="display: flex; flex-direction: row; align-items: center;">
+          <input type="text" class="form-control copy-form custom-input" name="recipient_subject" id="recipient_subject" oninput="reWrite('subject')" required/>
+           <div class="field-placeholder" id="field-placeholder_subject" onclick="addFocus('subject');"><span>SUBJECT</span></div>
+         </div>
+        </div>
+      </div>
+       
+     </div>
+
+      <!--
      <div class="form-group">
-     <label class="input-label" for="object">Subject of the email</label>
+     
+     <label class="input-label" for="object">Subject</label>
+    
      <div style="display: flex; flex-direction: row;">
         <div>
           <div style="display: flex; flex-direction: row; align-items: center;">
@@ -61,17 +82,19 @@
         </div>
       </div>
      </div>
-     <div>
+      -->
+    
        <div class="form-group">
-        <label class="input-label" for="message">Chat text</label>
-     <div style="display: flex; flex-direction: row;">
-        <div >
-          <div style="display: flex; flex-direction: row; align-items: center;">
-            <textarea id="message"  class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" required placeholder="Insert the transcript of the chat.."></textarea>
-          </div>
+        <label class="input-label" for="message">Message</label>
+      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="message">
+        <div>
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <textarea id="message" class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" oninput="reWrite('message')" required></textarea>
+            </div>
         </div>
       </div> 
        </div>
+  
 
        
      
@@ -83,12 +106,18 @@
       <div style="text-align: center;">
         <button id='send_btn' class="action-button" >Send chat</button>
      </div>
+     <!--
+     <div class="info-wrapper">
+        <label>Powered by</label>
+        <img style="max-width: 25%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
+      </div>
+     -->
      </div>
      </div>
   </div>
   </div>
    <div id="summaryMail" style='display: none'>
-     <p class="info-box" id="app_send" style="text-align:center; margin-bottom: 50px; margin-top: 80px;font-size: 28px"></p>
+     <p class="info-box" id="app_send" style="text-align:center; margin-bottom: 30px; margin-top: 80px;"></p>
      <!-- NEW MAIL BUTTON -->
       <div style="text-align: center;">
         <button id='newmail_btn' class="action-button" >Send new mail</button>
@@ -96,6 +125,7 @@
    </div>
   
  <script>
+   
    // DEFINE THE OBJECT MSG
    var msg = [];
    var message;
@@ -141,7 +171,7 @@
             msgToUser.innerHTML = "Email sent successfully!"
             summaryMail.style.display = "block";
             document.getElementById("recipient_address").value = "";
-            document.getElementById("object").value = "";
+            document.getElementById("recipient_subject").value = "";
             document.getElementById("message").innerHTML = "";
           } 
         } else {
@@ -160,6 +190,8 @@
            var jsonData = JSON.parse(XHR.responseText);
            console.log('response transcript mail JSON: ', jsonData);
            // INSERT MSG JSON INTO ARRAY MSG
+            message.innerHTML = 'Below is the chat history: ';
+            message.innerHTML += '\n\n';
            for (var i = 0; i < jsonData.length; i++) {
             var singlemsg = jsonData[i];
              console.log('user',singlemsg.senderFullname);
@@ -173,6 +205,8 @@
               message.innerHTML += "\n\n";
           }
           }   
+            message.innerHTML += '\n\n';
+            message.innerHTML += 'Best regards! The Tiledesk team.';
             console.log('message: ', message.innerHTML);
          } 
         
@@ -203,7 +237,7 @@
     const error = document.getElementById('error');
     btnSend.addEventListener( 'click', function() {
       var recipient_address = document.getElementById('recipient_address');
-      const object = document.getElementById('object');
+      const object = document.getElementById('recipient_subject');
       message = document.getElementById('message');
       const projectId = document.getElementById('projectId');
       //------------------------------------------------------------
@@ -214,11 +248,11 @@
       // ADD TO MSG THE PRESENTATION:
       var mess = message.value;
       console.log("Payment/message 1: ", message.innerHTML);
-      message.innerHTML = 'Below is the chat history: ';
-      message.innerHTML += '\n\n';
-      message.innerHTML += mess;
-      message.innerHTML += '\n\n';
-      message.innerHTML += 'Best regards! The Tiledesk team.';
+      //message.innerHTML = 'Below is the chat history: ';
+      //message.innerHTML += '\n\n';
+      //message.innerHTML += mess;
+      //message.innerHTML += '\n\n';
+      //message.innerHTML += 'Best regards! The Tiledesk team.';
       console.log("Payment/message 2: ", message.innerHTML);
       console.log("Payment/token: ", token.value);
       console.log("Payment/Project ID: ", projectId.value);
@@ -255,16 +289,56 @@
     });
 
    // CHANGE COLOR WHILE RE_WRITE THE INPUT TEXT MAIL
-    function reWrite() {
-      recipient_address = document.getElementById('recipient_address');
-      recipient_address.style.color='black';
+    function reWrite(elementName) {
+      console.log('rewriteeeeee', elementName)
+      if(elementName === 'to'){
+        let text = document.getElementById('recipient_address').value;
+        let result = text.includes("The email is incorrect!");
+        if (result) {
+          recipient_address.value='';
+        }
+        recipient_address = document.getElementById('recipient_address');
+        if (recipient_address.value === 'The email is incorrect!') {
+          recipient_address.value='';
+        }
+        recipient_address.style.color='black';
+        console.log('recipient_address.value',recipient_address.value);
+        if (recipient_address.value != '') {
+           document.querySelector('#div_input_topic[name="to"]').classList.add("hasValue");
+        }
+      } else if(elementName === 'subject'){
+        recipient_subject = document.getElementById('recipient_subject');
+        recipient_subject.style.color='black';
+        console.log('recipient_subject.value',recipient_subject.value);
+        if (recipient_subject.value != '') {
+           document.querySelector('#div_input_topic[name="subject"]').classList.add("hasValue");
+        }
+      } else if(elementName === 'message'){
+        recipient_message = document.getElementById('message');
+        recipient_message.style.color='black';
+        console.log('recipient_message.value',recipient_message.value);
+        if (recipient_message.value != '') {
+           document.querySelector('#div_input_topic[name="message"]').classList.add("hasValue");
+        }
+      }
     }
+
+   
+   function addFocus(elementName){
+     if(elementName === 'to'){
+       document.getElementById('field-placeholder_email').focus();
+     }else if(elementName === 'subject'){
+       document.getElementById('field-placeholder_subject').focus();
+     }
+  }
     // SELECT THE INPUT TEXT MAIL
     function Reselect() {
-      recipient_address = document.getElementById('recipient_address');
-      recipient_address.value='';
-      console.log('CIAO');
+      if (document.getElementById('recipient_address').value === 'The email is incorrect!')
+        document.getElementById('recipient_address').value='';
+        console.log('CIAO', document.getElementById('recipient_address').value);
     }
+
+   
    var stringConstructor = "test".constructor;
 var arrayConstructor = [].constructor;
 var objectConstructor = ({}).constructor;

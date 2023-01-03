@@ -112,7 +112,32 @@ router.get('/info', async (req, res) => {
   })
 })
 
-
+router.get('/detail', async (req, res) => {
+  console.log('READ APP Stripe Info');
+  console.log('Request query: ', req.query);
+  var projectId = req.query.projectId;
+  var log = false;
+  var page = '/detail.html';
+  var dir = '/template';
+  readHTMLFile(page, dir, (err, html) => {
+    if (err) {
+      console.log("(ERROR) Read html file: ", err);
+    }
+    var template = handlebars.compile(html);
+    var replacements = {
+      //domain: domain,
+      //pay_method_types: pay_method_types,
+      //stripe_publishable_key: sett.stripe_publishable_key,
+      //stripe_secret_key: stripe_secret_key,
+      //stripe_wehook_segret: sett.stripe_wehook_segret
+    }
+    if (log) {
+      console.log("Replacements: ", replacements);
+    }
+    var html = template(replacements);
+    res.send(html);
+  })
+})
 
 
 // *****************************
