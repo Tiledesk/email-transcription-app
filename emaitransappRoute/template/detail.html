@@ -48,7 +48,10 @@
 
     <div class="icon-and-title" style="margin-top: 20px;">
       <div>
+        <!--
         <img src="./images/mail-chat.png" width="100" height="auto"  />
+        -->
+         <img src="https://www.clipartmax.com/png/full/33-335961_in-a-change-of-timing-to-our-normal-wednesday-webinar-logo-chat.png" width="100" height="auto"  />
       </div>
       
       <div style="display: flex; flex-direction: row; justify-content: space-between; margin-left: 40px; width: 100%;">
@@ -61,66 +64,7 @@
 
         <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end;">
           
-          {{#if installed}}
-            <!-- Open button -->
-            <form action="./configure" method="get">
-              <input type="hidden" name="project_id" value="{{ project_id }}" />
-              <input type="hidden" name="app_id" value="{{ app_id }}" />
-              <input type="hidden" name="token" value="{{ token }}" />
-              <input type="submit" class="btn install-button" value="Open">
-            </form>
-  
-            <!-- Uninstall button -->
-            <button class="btn uninstall-button" onclick="document.getElementById('uninstall-modal').style.display='flex'">Uninstall</button>
-            
-            <!-- Uninstall modal -->
-            <div id="uninstall-modal" class="modal">
-              <div class="modal-content">
-                <!--<span class="close">×</span-->
-                <h2>WhatsApp Business</h2>
-                <div style="margin-top: 20px;">
-                  <img src="https://www.clipartmax.com/png/full/205-2058823_whatsapp-ios-icon-whatsapp-ios-icon-png.png" width="70" height="auto"  />
-                </div>
-                <p style="margin-top: 20px; margin-bottom: 20px;">Are you sure you want to uninstall this app?</p>
-
-                <div style="display: flex; flex-direction: row; width: 100%; justify-content: center;">
-                  <button class="btn cancel-btn" onclick="document.getElementById('uninstall-modal').style.display='none'">Cancel</button>
-
-                  <form action="./uninstall" method="post">
-                    <input type="hidden" name="project_id" value="{{ project_id }}" />
-                    <input type="hidden" name="app_id" value="{{ app_id }}" />
-                    <input type="hidden" name="token" value="{{ token }}" />
-                    <input type="submit" class="btn uninstall-button" value="Yes, uninstall">
-                  </form>
-                </div>
-              </div>
-            </div>
-            
-          {{else}}
-            <button class="btn install-button" onclick="document.getElementById('install-modal').style.display='flex'">Install</button>
-            <!-- Install modal -->
-            <div id="install-modal" class="modal">
-              <div class="modal-content">
-                <!--<span class="close">×</span-->
-                <h2>WhatsApp Business</h2>
-                <div style="margin-top: 20px;">
-                  <img src="https://www.clipartmax.com/png/full/205-2058823_whatsapp-ios-icon-whatsapp-ios-icon-png.png" width="70" height="auto"  />
-                </div>
-                <p style="margin-top: 20px; margin-bottom: 20px;">Are you sure you want to install this app?</p>
-
-                <div style="display: flex; flex-direction: row; width: 100%; justify-content: center;">
-                  <button class="btn cancel-btn" onclick="document.getElementById('install-modal').style.display='none'">Cancel</button>
-
-                  <form action="./install" method="post">
-                    <input type="hidden" name="project_id" value="{{ project_id }}" />
-                    <input type="hidden" name="app_id" value="{{ app_id }}" />
-                    <input type="hidden" name="token" value="{{ token }}" />
-                    <input type="submit" class="btn install-button" value="Install">
-                  </form>
-                </div>
-              </div>
-            </div>
-          {{/if}}
+          
           
 
         </div>
@@ -133,8 +77,9 @@
 
     <div class="scrollmenu">
 
-      <img src="https://user-images.githubusercontent.com/45603238/195042381-995ff805-359d-4d97-af67-f86f937c175a.jpg" class="screenshot" />
-     
+      <img src="./images/screenshot_emailapp02.png" class="screenshot" />
+      <img src="./images/screenshot_emailapp01.png" class="screenshot" />    
+      <img src="./images/screenshot_emailapp04.png" class="screenshot" />
     </div>
   
     <hr style="margin-top: 20px; margin-bottom: 20px">

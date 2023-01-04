@@ -7,14 +7,17 @@
   <title>Tiledesk-email-transcript-app</title>
     <link rel="stylesheet" href="./css/base.css">
   <script>
-  
+    //SET CACHE FOT TOKEN
+    var cache = { timestamp : null, data : null };
     window.addEventListener("message", (event) => {
     console.log('addEventListener_frame: ', event)
     if(event && event.data){
       //GET TOK  EN FROM PAGE TILEDESK
-      const token = document.getElementById("token");
+      var token = document.getElementById("token");
       console.log('token: ',token)
       token.value = event.data.token;
+      //SET TOKEN CACHE
+      setData(token.value);
       console.log('token.value: ',token.value)
       var projectId = document.getElementById("projectId");
       if(event.data.request.id_project){
@@ -65,25 +68,9 @@
            <div class="field-placeholder" id="field-placeholder_subject" onclick="addFocus('subject');"><span>SUBJECT</span></div>
          </div>
         </div>
-      </div>
-       
+      </div>       
      </div>
 
-      <!--
-     <div class="form-group">
-     
-     <label class="input-label" for="object">Subject</label>
-    
-     <div style="display: flex; flex-direction: row;">
-        <div>
-          <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="text" class="form-control copy-form custom-input" name="object" id="object" placeholder="Insert the subject of the email.."/>
-          </div>
-        </div>
-      </div>
-     </div>
-      -->
-    
        <div class="form-group">
         <label class="input-label" for="message">Message</label>
       <div class="field-wrapper" id="div_input_topic" #div_input_topic name="message">
@@ -92,12 +79,8 @@
             <textarea id="message" class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" oninput="reWrite('message')" required></textarea>
             </div>
         </div>
-      </div> 
+           </div>
        </div>
-  
-
-       
-     
       <!-- SEND TOKEN TO INDEX.JS -->
       <input type='hidden' id='token' name='token' />
       <input type='hidden' id='projectId' name='projectId' />
@@ -106,12 +89,12 @@
       <div style="text-align: center;">
         <button id='send_btn' class="action-button" >Send chat</button>
      </div>
-     <!--
+     
      <div class="info-wrapper">
         <label>Powered by</label>
-        <img style="max-width: 25%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
+        <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
       </div>
-     -->
+  
      </div>
      </div>
   </div>
@@ -202,7 +185,7 @@
            message.innerHTML += ": ";
            message.innerHTML += singlemsg.text;
           if (i < jsonData.length -1) {
-              message.innerHTML += "\n\n";
+              message.innerHTML += "\n";
           }
           }   
             message.innerHTML += '\n\n';
@@ -221,6 +204,10 @@
       XHR.open( opr, url );
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
       //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
+      if (token.value == undefined) {
+        token.value = getData(0);
+        console.log('TOKEN FROM CACHE');
+      }
       XHR.setRequestHeader("Authorization", token.value);
       XHR.send( urlEncodedData );
       // Capture the response to the server mail
@@ -284,6 +271,10 @@
       readTrascriptionChat();
       let createdMail = document.getElementById('createdMail');
       let summaryMail = document.getElementById('summaryMail');
+      document.querySelector('#div_input_topic[name="to"]').value = '';
+      document.querySelector('#div_input_topic[name="to"]').classList.remove("hasValue");
+      document.querySelector('#div_input_topic[name="subject"]').value = '';
+      document.querySelector('#div_input_topic[name="subject"]').classList.remove("hasValue");
       createdMail.style.display = "block";
       summaryMail.style.display = "none";
     });
@@ -301,21 +292,25 @@
         if (recipient_address.value === 'The email is incorrect!') {
           recipient_address.value='';
         }
-        recipient_address.style.color='black';
+        recipient_address.style.color='#333';
         console.log('recipient_address.value',recipient_address.value);
         if (recipient_address.value != '') {
            document.querySelector('#div_input_topic[name="to"]').classList.add("hasValue");
+        } else {
+          document.querySelector('#div_input_topic[name="to"]').classList.remove("hasValue");
         }
       } else if(elementName === 'subject'){
         recipient_subject = document.getElementById('recipient_subject');
-        recipient_subject.style.color='black';
+        recipient_subject.style.color='#333';
         console.log('recipient_subject.value',recipient_subject.value);
         if (recipient_subject.value != '') {
            document.querySelector('#div_input_topic[name="subject"]').classList.add("hasValue");
+        } else {
+           document.querySelector('#div_input_topic[name="subject"]').classList.remove("hasValue");
         }
       } else if(elementName === 'message'){
         recipient_message = document.getElementById('message');
-        recipient_message.style.color='black';
+        recipient_message.style.color='#333';
         console.log('recipient_message.value',recipient_message.value);
         if (recipient_message.value != '') {
            document.querySelector('#div_input_topic[name="message"]').classList.add("hasValue");
@@ -390,6 +385,18 @@ for (var i=0, len = testSubjects.length; i < len; i++) {
       }
      
    }
+  // SET CACHE TOKEN
+   function setData(data) {
+    cache.data  = data;
+    cache.timestamp = new Date;
+  }
+  // GET CACHE TOKEN
+  function getData(maxAge) {
+    if (false) {/* compare cache.timestamp to now - maxAge */
+        return null;
+    }
+    return cache.data;
+  }
    
   </script>
 </body>
