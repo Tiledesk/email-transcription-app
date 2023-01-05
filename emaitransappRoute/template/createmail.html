@@ -41,71 +41,64 @@
 <body>
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
   <div id="form" class="container" style="display:flex; align-items: center; justify-content: center;">
-    <!--
-   <div id="createdMail" class="field-wrapper-email">
-    -->
     <div id="createdMail">
-   <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
-     <div class="form-group">
-      <!--
-     <label class="input-label" for="recipient_address">To</label>
-       -->
-      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="to">
-        <div>
-         <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" onfocus="Reselect()"  oninput="reWrite('to')" required/>
-           <div class="field-placeholder" id="field-placeholder_email" onclick="addFocus('to');"><span>TO</span></div>
-         </div>
-        </div>
-      </div>
-     </div>
-
-      <div class="form-group">
-      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="subject">
-        <div>
-         <div style="display: flex; flex-direction: row; align-items: center;">
-          <input type="text" class="form-control copy-form custom-input" name="recipient_subject" id="recipient_subject" oninput="reWrite('subject')" required/>
-           <div class="field-placeholder" id="field-placeholder_subject" onclick="addFocus('subject');"><span>SUBJECT</span></div>
-         </div>
-        </div>
-      </div>       
-     </div>
-
+     <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
        <div class="form-group">
-        <label class="input-label" for="message">Message</label>
-      <div class="field-wrapper" id="div_input_topic" #div_input_topic name="message">
-        <div>
-          <div style="display: flex; flex-direction: column; align-items: center;">
-            <textarea id="message" class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" oninput="reWrite('message')" required></textarea>
-            </div>
-        </div>
+        <div class="field-wrapper" id="div_input_topic" #div_input_topic name="to">
+          <div>
+           <div style="display: flex; flex-direction: row; align-items: center;">
+            <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" onfocus="Reselect()"  oninput="reWrite('to')" required/>
+             <div class="field-placeholder" id="field-placeholder_email" onclick="addFocus('to');"><span>TO</span></div>
            </div>
+          </div>
+        </div>
        </div>
-      <!-- SEND TOKEN TO INDEX.JS -->
-      <input type='hidden' id='token' name='token' />
-      <input type='hidden' id='projectId' name='projectId' />
-      <input type='hidden' id='request_id' name='request_id' />
-      <!-- SEND BUTTON -->
-      <div style="text-align: center;">
-        <button id='send_btn' class="action-button" >Send chat</button>
-     </div>
-     
-     <div class="info-wrapper">
-        <label>Powered by</label>
-        <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
-      </div>
   
-     </div>
-     </div>
-  </div>
-  </div>
-   <div id="summaryMail" style='display: none'>
-     <p class="info-box" id="app_send" style="text-align:center; margin-bottom: 30px; margin-top: 80px;"></p>
+        <div class="form-group">
+        <div class="field-wrapper" id="div_input_topic" #div_input_topic name="subject">
+          <div>
+           <div style="display: flex; flex-direction: row; align-items: center;">
+            <input type="text" class="form-control copy-form custom-input" name="recipient_subject" id="recipient_subject" oninput="reWrite('subject')" required/>
+             <div class="field-placeholder" id="field-placeholder_subject" onclick="addFocus('subject');"><span>SUBJECT</span></div>
+           </div>
+          </div>
+        </div>       
+       </div>
+  
+         <div class="form-group">
+          <label class="input-label" for="message">Message</label>
+        <div class="field-wrapper" id="div_input_topic" #div_input_topic name="message">
+          <div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <textarea id="message" class="form-control copy-form custom-input areatext" name="message" rows="8" cols="33" oninput="reWrite('message')" required></textarea>
+              </div>
+          </div>
+             </div>
+         </div>
+        <!-- SEND TOKEN TO INDEX.JS -->
+        <input type='hidden' id='token' name='token' />
+        <input type='hidden' id='projectId' name='projectId' />
+        <input type='hidden' id='request_id' name='request_id' />
+        <!-- SEND BUTTON -->
+        <div style="text-align: center;">
+          <button id='send_btn' class="action-button" >Send chat</button>
+       </div>
+       
+       <div class="info-wrapper">
+          <label>Powered by</label>
+          <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
+        </div>
+  
+    </div>
+    <div id="summaryMail" style='display: none;'>
+     <p class="info-box" id="app_send" style="text-align:center;"></p>
      <!-- NEW MAIL BUTTON -->
       <div style="text-align: center;">
         <button id='newmail_btn' class="action-button" >Send new mail</button>
      </div>
    </div>
+  </div>
+
   
  <script>
    

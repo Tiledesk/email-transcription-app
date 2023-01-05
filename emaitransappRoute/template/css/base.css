@@ -102,7 +102,7 @@ select {
     margin-top: 35px;
     width: 200px;
     font-weight: 500;
-    background-color: #0ba2dc;
+    background-color: rgb(0,86,192);
     border-radius: 20px;
     color: white;
     border: 0;
@@ -271,18 +271,18 @@ select {
 }
 
 .info-box {
-  margin-top: 26px;
+  margin-bottom: 30px;
+  margin-top: 80px;
   color: #1f2d3d;
   font-size: 16px; 
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  margin-bottom: 10px;
   padding: 20px; 
   border-radius: 8px; 
   border: solid 1px #d8d8d8;
   z-index: 1;
-  background-color: #f7f7f7;
+  background-color: white;
 }
 
 /* FUTURE IMPL */
