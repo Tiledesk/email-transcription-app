@@ -204,9 +204,9 @@
       XHR.open( opr, url );
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
       //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
-      if (token.value == undefined) {
+      if (token.value == 'undefined') {
         token.value = getData(0);
-        console.log('TOKEN FROM CACHE');
+        console.log('TOKEN FROM CACHE',token.value);
       }
       XHR.setRequestHeader("Authorization", token.value);
       XHR.send( urlEncodedData );
@@ -237,7 +237,7 @@
       console.log("Payment/message 1: ", message.innerHTML);
       //message.innerHTML = 'Below is the chat history: ';
       //message.innerHTML += '\n\n';
-      message.innerHTML += mess;
+      message.innerHTML = mess;
       //message.innerHTML += '\n\n';
       //message.innerHTML += 'Best regards! The Tiledesk team.';
       console.log("Payment/message 2: ", mess);
