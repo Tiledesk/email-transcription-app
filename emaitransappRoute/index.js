@@ -46,35 +46,6 @@ router.get('/create-mail', async (req, res) => {
       }
       var template = handlebars.compile(html);
       var replacements = {
-        //domain: domain,
-        //pay_method_types: pay_method_types,
-        //stripe_publishable_key: sett.stripe_publishable_key,
-        //stripe_secret_key: stripe_secret_key,
-        //stripe_wehook_segret: sett.stripe_wehook_segret,
-      }
-      if (log) {
-        console.log("Replacements: ", replacements);
-      }
-      var html = template(replacements);
-      res.send(html);
-    })
-  } else {
-    console.log('SETTINGS IS KO!');
-    console.log('Request query: ', req.query);
-    var log = false;
-    var page = '/index.html';
-    var dir = '/configure';
-    readHTMLFile(page, dir, (err, html) => {
-      if (err) {
-        console.log("(ERROR) Read html file: ", err);
-      }
-      var template = handlebars.compile(html);
-      var replacements = {
-        //domain: domain,
-        //pay_method_types: pay_method_types,
-        stripe_publishable_key: stripe_publishable_key,
-        //stripe_secret_key: stripe_secret_key,
-        stripe_wehook_segret: stripe_wehook_segret,
       }
       if (log) {
         console.log("Replacements: ", replacements);
@@ -98,11 +69,6 @@ router.get('/info', async (req, res) => {
     }
     var template = handlebars.compile(html);
     var replacements = {
-      //domain: domain,
-      //pay_method_types: pay_method_types,
-      //stripe_publishable_key: sett.stripe_publishable_key,
-      //stripe_secret_key: stripe_secret_key,
-      //stripe_wehook_segret: sett.stripe_wehook_segret
     }
     if (log) {
       console.log("Replacements: ", replacements);
@@ -125,11 +91,6 @@ router.get('/detail', async (req, res) => {
     }
     var template = handlebars.compile(html);
     var replacements = {
-      //domain: domain,
-      //pay_method_types: pay_method_types,
-      //stripe_publishable_key: sett.stripe_publishable_key,
-      //stripe_secret_key: stripe_secret_key,
-      //stripe_wehook_segret: sett.stripe_wehook_segret
     }
     if (log) {
       console.log("Replacements: ", replacements);
@@ -139,14 +100,6 @@ router.get('/detail', async (req, res) => {
   })
 })
 
-
-// *****************************
-// ********* FUNCTIONS *********
-// *****************************
-
-function startApp(settings, callback) {
-  console.log("Starting Email Transcript App");
-}
 // *****************************
 // ********* FUNCTIONS *********
 // *****************************
@@ -154,19 +107,14 @@ function readHTMLFile(templateName, dir, callback) {
   var perc = __dirname + dir + templateName;
   console.log("Reading file: ", perc)
   console.log("Reading __dirname: ", __dirname)
-  //fs.readFile(__dirname + '/configure' + templateName, { encoding: 'utf-8' },
   fs.readFile(__dirname + dir + templateName, { encoding: 'utf-8' },
-    //fs.readFile("https://accept-a-payment-app-into-chat.leomirco.repl.co/payment", { encoding: 'utf-8' },
     function(err, html) {
       if (err) {
         throw err;
-        //callback(err);
       } else {
         callback(null, html)
       }
     })
 }
 
-//export this router to use in our index.js
-//module.exports = { router: router, startApp: startApp };
 module.exports = router;
