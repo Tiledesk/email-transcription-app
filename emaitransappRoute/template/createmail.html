@@ -18,7 +18,9 @@
       token.value = event.data.token;
       //SET TOKEN CACHE
       setData(token.value);
-      console.log('token.value: ',token.value)
+      var token_cache = getData(0);
+      console.log('token.value: ',token.value);
+      console.log('token_cache: ',token_cache);
       var projectId = document.getElementById("projectId");
       if(event.data.request.id_project){
         projectId.value = event.data.request.id_project;
@@ -39,10 +41,14 @@
 </head>
 
 <body>
+  <!--
   <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
-  <div id="form" class="container" style="display:flex; align-items: center; justify-content: center;">
+  -->
+  <div id="form" class="container" style="display:flex; align-items: center; justify-content: center; text-align: center;">
     <div id="createdMail">
+     <img src="./images/chat-su-mail.png" width="30" height="auto"  />
      <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
+      
        <div class="form-group">
         <div class="field-wrapper" id="div_input_topic" #div_input_topic name="to">
           <div>
@@ -88,14 +94,20 @@
           <label>Powered by</label>
           <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
         </div>
-  
     </div>
+    
     <div id="summaryMail" style='display: none;'>
+      <img src="./images/chat-su-mail.png" width="30" height="auto"  />
+      <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
      <p class="info-box" id="app_send" style="text-align:center;"></p>
      <!-- NEW MAIL BUTTON -->
       <div style="text-align: center;">
         <button id='newmail_btn' class="action-button" >Send new mail</button>
      </div>
+      <div class="info-wrapper">
+          <label>Powered by</label>
+          <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
+        </div>
    </div>
   </div>
 
@@ -172,14 +184,16 @@
             var singlemsg = jsonData[i];
              console.log('user',singlemsg.senderFullname);
              console.log('text',singlemsg.text);
-             msg.push(singlemsg);
-            // populate the text area
-           message.innerHTML += singlemsg.senderFullname;
-           message.innerHTML += ": ";
-           message.innerHTML += singlemsg.text;
-          if (i < jsonData.length -1) {
-              message.innerHTML += "\n";
-          }
+             if (singlemsg.senderFullname != "System" ) {
+               msg.push(singlemsg);
+               // populate the text area
+               message.innerHTML += singlemsg.senderFullname;
+               message.innerHTML += ": ";
+               message.innerHTML += singlemsg.text;
+               if (i < jsonData.length -1) {
+                  message.innerHTML += "\n";
+                }
+             }
           }   
             message.innerHTML += '\n\n';
             message.innerHTML += 'Best regards! The Tiledesk team.';
@@ -198,10 +212,12 @@
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
       //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
       if (token.value == 'undefined') {
-        token.value = getData(0);
-        console.log('TOKEN FROM CACHE',token.value);
+        var token_cache = getData(0);
+        console.log('TOKEN FROM CACHE',token_cache);
+        XHR.setRequestHeader("Authorization", token_cache);
+      } else {
+        XHR.setRequestHeader("Authorization", token.value);
       }
-      XHR.setRequestHeader("Authorization", token.value);
       XHR.send( urlEncodedData );
       // Capture the response to the server mail
       XHR.onreadystatechange = function() {
@@ -313,10 +329,14 @@
 
    
    function addFocus(elementName){
-     if(elementName === 'to'){
-       document.getElementById('field-placeholder_email').focus();
-     }else if(elementName === 'subject'){
-       document.getElementById('field-placeholder_subject').focus();
+     if(elementName == 'to'){
+       //document.getElementById('field-placeholder_email').focus();
+       document.getElementById('recipient_address').focus();
+       console.log('focus1')
+     }else if(elementName == 'subject'){
+       //document.getElementById('field-placeholder_subject').focus();
+       document.getElementById('recipient_subject').focus();
+       console.log('focus2')
      }
   }
     // SELECT THE INPUT TEXT MAIL
