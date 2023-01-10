@@ -58,6 +58,17 @@ select {
   transition: 0.25s ease;
   width: 100%;
 }
+.input-error {
+  font-size: 9px; 
+  font-weight: 540;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  margin-bottom: 5px;
+  transition: 0.25s ease;
+  width: 100%;
+  color: red;
+  margin-bottom: 3px;
+}
 .input-field {
   border: solid 1px #d8d8d8;
   z-index: 1;
@@ -148,7 +159,7 @@ select {
 }
 @media screen and (min-width: 321px) {
   .custom-input {
-    height: 25px;
+    height: 20px;
     width: 447px;
     border: solid 1px #d8d8d8;
     border-radius: 4px;
@@ -387,7 +398,22 @@ select {
     margin-left: 26px;
   }
 }
-
+.row {
+    width: auto;
+    border: 0px solid rgb(0,86,192);
+    margin-top: 10px;
+    padding: 15px;
+}
+.flex-item {
+    padding: 5px;
+    margin: 0px;
+    line-height: 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 15px;
+}
 .form-group {
   padding-bottom: 15px;
 }

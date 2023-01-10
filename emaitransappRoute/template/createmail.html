@@ -41,19 +41,17 @@
 </head>
 
 <body>
-  <!--
-  <script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script>
-  -->
   <div id="form" class="container" style="display:flex; align-items: center; justify-content: center; text-align: center;">
-    <div id="createdMail">
+    <div class="row" id="createdMail">
      <img src="./images/chat-su-mail.png" width="30" height="auto"  />
      <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
       
        <div class="form-group">
+         <label class="input-error" id="app_err" style="visibility: hidden;">The email is incorrect!</label>
         <div class="field-wrapper" id="div_input_topic" #div_input_topic name="to">
           <div>
            <div style="display: flex; flex-direction: row; align-items: center;">
-            <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" onfocus="Reselect()"  oninput="reWrite('to')" required/>
+            <input type="email" class="form-control copy-form custom-input" name="recipient_address" id="recipient_address" oninput="reWrite('to')" required/>
              <div class="field-placeholder" id="field-placeholder_email" onclick="addFocus('to');"><span>TO</span></div>
            </div>
           </div>
@@ -96,7 +94,7 @@
         </div>
     </div>
     
-    <div id="summaryMail" style='display: none;'>
+    <div class="row" id="summaryMail" style='display: none;'>
       <img src="./images/chat-su-mail.png" width="30" height="auto"  />
       <p class="subtitle" id="app_name" style="text-align:center;">Send transcript by email</p>
      <p class="info-box" id="app_send" style="text-align:center;"></p>
@@ -109,6 +107,7 @@
           <img style="max-width: 20%;!important;" src="https://support-pre.tiledesk.com/dashboard/assets/img/logos/tiledesk-logo_new_gray.svg">
         </div>
    </div>
+    
   </div>
 
   
@@ -253,7 +252,7 @@
       console.log("Payment/token: ", token.value);
       console.log("Payment/Project ID: ", projectId.value);
       //console.log("Payment/mail_correct: ", mail_correct);
-      if ( validateMail(recipient_address) == true && recipient_address.value != '' && recipient_address.value != 'The email is incorrect!'  )     { 
+      if ( validateMail(recipient_address) == true && recipient_address.value != '')     { 
         var send_url = 'https://api.tiledesk.com/v2/'+ projectId.value +'/emails/send';
       if (object) {
         sendData( {
@@ -268,8 +267,10 @@
         //amount.value = 0;
       }
       } else {
-        recipient_address.value = 'The email is incorrect!';
-        recipient_address.style.color='red';
+        //recipient_address.value = 'The email is incorrect!';
+        //recipient_address.style.color='red';
+        document.getElementById('app_err').style.visibility = "visible";
+        console.log('app_err is visible;')
       } 
     });
 
@@ -292,17 +293,8 @@
     function reWrite(elementName) {
       console.log('rewriteeeeee', elementName)
       if(elementName === 'to'){
-        let text = document.getElementById('recipient_address').value;
-        let result = text.includes("The email is incorrect!");
-        if (result) {
-          recipient_address.value='';
-        }
-        recipient_address = document.getElementById('recipient_address');
-        if (recipient_address.value === 'The email is incorrect!') {
-          recipient_address.value='';
-        }
-        recipient_address.style.color='#333';
-        console.log('recipient_address.value',recipient_address.value);
+        document.getElementById('app_err').style.visibility = "hidden";
+        console.log('app_err is hidden',document.getElementById('app_err').style.visible);
         if (recipient_address.value != '') {
            document.querySelector('#div_input_topic[name="to"]').classList.add("hasValue");
         } else {
