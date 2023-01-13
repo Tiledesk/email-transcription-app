@@ -17,10 +17,12 @@
       console.log('token: ',token)
       token.value = event.data.token;
       //SET TOKEN CACHE
-      setData(token.value);
-      var token_cache = getData(0);
-      console.log('token.value: ',token.value);
-      console.log('token_cache: ',token_cache);
+      if (token.value != 'undefined') {
+        setData(token.value);
+        var token_cache = getData(0);
+        console.log('token.value 1: ',token.value);
+        console.log('token.cache 1: ',token_cache);
+      }
       var projectId = document.getElementById("projectId");
       if(event.data.request.id_project){
         projectId.value = event.data.request.id_project;
@@ -210,9 +212,10 @@
       XHR.open( opr, url );
       XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
       //XHR.setRequestHeader("Authorization", "Basic " + btoa("user:pass"));
+      console.log('token.value 2: ',token.value);
       if (token.value == 'undefined') {
         var token_cache = getData(0);
-        console.log('TOKEN FROM CACHE',token_cache);
+        console.log('token.cache 2: ',token_cache);
         XHR.setRequestHeader("Authorization", token_cache);
       } else {
         XHR.setRequestHeader("Authorization", token.value);

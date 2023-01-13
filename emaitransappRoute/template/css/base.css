@@ -59,7 +59,7 @@ select {
   width: 100%;
 }
 .input-error {
-  font-size: 9px; 
+  font-size: 10px; 
   font-weight: 540;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -68,6 +68,7 @@ select {
   width: 100%;
   color: red;
   margin-bottom: 3px;
+  margin-left: 2px;
 }
 .input-field {
   border: solid 1px #d8d8d8;
