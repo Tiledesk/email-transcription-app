@@ -123,7 +123,7 @@
       const requestId = document.getElementById('request_id');
       console.log('rTChat requestID: ', requestId.value);
       // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION (PRODUCTION SYSTEM)
-      call_url = 'https://api.tiledesk.com/v2/public/requests/'+ requestId.value +'/messages';
+      call_url = 'https://api.tiledesk.com/v3/public/requests/'+ requestId.value +'/messages';
        sendData( {
           request_id:requestId.value,
         }, call_url, 'GET');
@@ -256,7 +256,7 @@
       console.log("Payment/Project ID: ", projectId.value);
       //console.log("Payment/mail_correct: ", mail_correct);
       if ( validateMail(recipient_address) == true && recipient_address.value != '')     { 
-        var send_url = 'https://api.tiledesk.com/v2/'+ projectId.value +'/emails/send';
+        var send_url = 'https://api.tiledesk.com/v3/'+ projectId.value +'/emails/send';
       if (object) {
         sendData( {
           //token:token.value,
