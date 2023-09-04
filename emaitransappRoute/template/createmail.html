@@ -22,6 +22,13 @@
         var token_cache = getData(0);
         console.log('token.value 1: ',token.value);
         console.log('token.cache 1: ',token_cache);
+         // CALL THE USER MAIL
+        // SERVER_BASE_URL PRE: https://tiledesk-server-pre.herokuapp.com/
+        // SERVER_BASE_URL PRO:https://api.tiledesk.com/v3/
+        var call_url_service = '{{server_base_url}}users';
+       sendData( {
+          Authorization:token_cache,
+        }, call_url_service, 'GET');  
       }
       var projectId = document.getElementById("projectId");
       if(event.data.request.id_project){
@@ -87,8 +94,14 @@
         <input type='hidden' id='request_id' name='request_id' />
         <!-- SEND BUTTON -->
         <div style="text-align: center;">
-          <button id='send_btn' class="action-button" >Send chat</button>
+          <button id='send_btn' class="action-button" style="display: inline" >Send chat</button>
        </div>
+       
+       <div style="text-align: center;">
+         <br>
+          <a id='send_btn_html'  href="" style="display: none">Open desktop email</a>
+       </div>
+
        
        <div class="info-wrapper">
           <label>Powered by</label>
@@ -118,12 +131,13 @@
    // DEFINE THE OBJECT MSG
    var msg = [];
    var message;
-   
+   var reply_to_mail;
+   var text_mail;
     function readTrascriptionChat() {
       const requestId = document.getElementById('request_id');
       console.log('rTChat requestID: ', requestId.value);
       // CALL THE SERVICE FOR THE MAIL TRANSCRIPTION (PRODUCTION SYSTEM)
-      call_url = 'https://api.tiledesk.com/v3/public/requests/'+ requestId.value +'/messages';
+      call_url = '{{server_base_url}}public/requests/'+ requestId.value +'/messages';
        sendData( {
           request_id:requestId.value,
         }, call_url, 'GET');
@@ -173,32 +187,47 @@
         result = opr.localeCompare('GET');
         console.log('result GET: ',result);
         message = document.getElementById('message');
-        // READ TRANSCRIPTION
+        // READ TRANSCRIPTION OR USER DATA
          if (result == 0) {
-           message.innerHTML = '';
            var jsonData = JSON.parse(XHR.responseText);
-           console.log('response transcript mail JSON: ', jsonData);
-           // INSERT MSG JSON INTO ARRAY MSG
-            message.innerHTML = 'Below is the chat history: ';
+           //READ LOGGED USER MAIL
+           if (jsonData.email && jsonData.email != '') {
+             reply_to_mail = jsonData.email;
+             console.log('User email1: ', reply_to_mail);
+           } else {
+              message.innerHTML = '';
+              text_mail = '';
+              console.log('response transcript mail JSON: ', jsonData);
+             // INSERT MSG JSON INTO ARRAY MSG
+              message.innerHTML = 'Below is the chat history: ';
+              text_mail += 'Below is the chat history: ';
+              message.innerHTML += '\n\n';
+              text_mail += "%0A%0A";
+             for (var i = 0; i < jsonData.length; i++) {
+              var singlemsg = jsonData[i];
+               console.log('user',singlemsg.senderFullname);
+               console.log('text',singlemsg.text);
+               if (singlemsg.senderFullname != "System" ) {
+                 msg.push(singlemsg);
+                 // populate the text area
+                 message.innerHTML += singlemsg.senderFullname;
+                 text_mail += singlemsg.senderFullname;
+                 message.innerHTML += ": ";
+                 text_mail += ": ";
+                 message.innerHTML += singlemsg.text;
+                 text_mail += singlemsg.text;
+                 if (i < jsonData.length -1) {
+                    message.innerHTML += "\n";
+                    text_mail += "%0A";
+                  }
+               }
+            }   
             message.innerHTML += '\n\n';
-           for (var i = 0; i < jsonData.length; i++) {
-            var singlemsg = jsonData[i];
-             console.log('user',singlemsg.senderFullname);
-             console.log('text',singlemsg.text);
-             if (singlemsg.senderFullname != "System" ) {
-               msg.push(singlemsg);
-               // populate the text area
-               message.innerHTML += singlemsg.senderFullname;
-               message.innerHTML += ": ";
-               message.innerHTML += singlemsg.text;
-               if (i < jsonData.length -1) {
-                  message.innerHTML += "\n";
-                }
-             }
-          }   
-            message.innerHTML += '\n\n';
+            text_mail += "%0A%0A";
+            text_mail += 'Best regards! The Tiledesk team.';
             message.innerHTML += 'Best regards! The Tiledesk team.';
             console.log('message: ', message.innerHTML);
+           }
          } 
         
       });
@@ -227,10 +256,13 @@
            // Typical action to be performed when the document is ready:
           console.log('Response Call: ', XHR.responseText);
         } else {
-          console.log('Response Call: ', XHR.responseText);
+          console.log('Response Call Error: ', XHR.responseText);
         }
       };
     }
+
+    
+    // MAIL FUNCTION
     const btnSend = document.getElementById('send_btn');
     const error = document.getElementById('error');
     btnSend.addEventListener( 'click', function() {
@@ -256,18 +288,27 @@
       console.log("Payment/Project ID: ", projectId.value);
       //console.log("Payment/mail_correct: ", mail_correct);
       if ( validateMail(recipient_address) == true && recipient_address.value != '')     { 
-        var send_url = 'https://api.tiledesk.com/v3/'+ projectId.value +'/emails/send';
+        var send_url = '{{server_base_url}}'+ projectId.value +'/emails/send';
+         console.log('User email2: ', reply_to_mail);
+         console.log('message.innerHTML: ', message.innerHTML);
       if (object) {
-        sendData( {
+        // REPLACE /n WITH %0A
+        console.log('text_mail: ', text_mail);
+        send_btn_html.href = "mailto:"+ reply_to_mail + "?subject="+object.value+  "&body=" + text_mail + + "&embedded=true";
+        send_btn.style.display = "none";
+        send_btn_html.style.display = "block";
+        //sendData( {
           //token:token.value,
           //projectId:projectId.value,
           //request_id:request_id.value,
-          to:recipient_address.value,
-          subject:object.value,
-          text:message.innerHTML
-        }, send_url, 'POST');
+          //replyto:reply_to_mail,
+          //to:recipient_address.value,
+          //subject:object.value,
+          //text:message.innerHTML
+        //}, send_url, 'POST');
       }  else {
         //amount.value = 0;
+        
       }
       } else {
         //recipient_address.value = 'The email is incorrect!';
@@ -276,6 +317,16 @@
         console.log('app_err is visible;')
       } 
     });
+
+   //MAIL FUNCTION TEST
+   
+
+   //
+    const send_btn_html = document.getElementById('send_btn_html');
+    
+
+
+   // END MAIL TEST
 
 
    //BUTTON NEW MAIL

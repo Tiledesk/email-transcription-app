@@ -19,6 +19,8 @@ const { resolve } = require('path');
 const env = require('dotenv').config({ path: './.env' });
 
 router.use(express.static(path.join(__dirname, 'template')));
+// ENVIROMNENT VARIABLE
+var SERVER_BASE_URL = process.env.SERVER_BASE_URL;
 
 
 
@@ -46,6 +48,7 @@ router.get('/create-mail', async (req, res) => {
       }
       var template = handlebars.compile(html);
       var replacements = {
+        server_base_url: SERVER_BASE_URL,
       }
       if (log) {
         console.log("Replacements: ", replacements);
